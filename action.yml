@@ -1,0 +1,63 @@
+name: Code Sign with coalaura
+description: Sign Windows, macOS and Linux binaries with coalaura/builder
+
+author: coalaura
+
+branding:
+  icon: shield
+  color: blue
+
+inputs:
+  builder-version:
+    description: Version of coalaura/builder to use
+    required: false
+    default: v0.4.3
+
+  path:
+    description: Binary to sign
+    required: true
+
+  key:
+    description: Base64-encoded PEM, PFX, or P12 signing key
+    required: false
+
+  key-file:
+    description: Path to a PEM, PFX, or P12 signing key
+    required: false
+
+  chain:
+    description: Certificate chain files or HTTPS URLs, one per line
+    required: false
+
+  passphrase:
+    description: Passphrase for the signing key
+    required: false
+
+outputs:
+  path:
+    description: Absolute path to the signed binary
+    value: ${{ steps.sign.outputs.path }}
+
+  filename:
+    description: Filename of the signed binary
+    value: ${{ steps.sign.outputs.filename }}
+
+  image:
+    description: Builder Docker image used
+    value: ${{ steps.sign.outputs.image }}
+
+runs:
+  using: composite
+
+  steps:
+    - name: Sign
+      id: sign
+      shell: bash
+      env:
+        INPUT_BUILDER_VERSION: ${{ inputs.builder-version }}
+        INPUT_PATH: ${{ inputs.path }}
+        INPUT_KEY: ${{ inputs.key }}
+        INPUT_KEY_FILE: ${{ inputs.key-file }}
+        INPUT_CHAIN: ${{ inputs.chain }}
+        INPUT_PASSPHRASE: ${{ inputs.passphrase }}
+      run: bash "$GITHUB_ACTION_PATH/entrypoint.sh"

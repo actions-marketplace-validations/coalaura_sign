@@ -1,4 +1,4 @@
-name: Code Sign with coalaura
+name: Code Sign with coalaura/builder
 description: Sign Windows, macOS and Linux binaries with coalaura/builder
 
 author: coalaura
